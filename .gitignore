@@ -1,0 +1,5 @@
+# Distribution / packaging
+lib/
+
+# Mac OS
+.DS_Store
