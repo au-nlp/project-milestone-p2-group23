@@ -13,7 +13,7 @@ Once the graph is constructed, community detection methods can reveal clusters o
 
 As an extension, I propose adding a similarity search in a reduced embedding space. Episodes can be represented as high-dimensional vectors from their transcripts and metadata, then projected into three dimensions using PCA. In this space, nearby points correspond to episodes with similar discourse patterns or overlapping communities. Nearest-neighbor search in 3D would make it easy to retrieve related episodes and to visualize clusters, highlighting both obvious and unexpected overlaps across categories.
 
-[View the demo](drafts/community_graph.html)
+[View the demo](drafts/communities_graph.html)
 
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/hgNAtOO3)
 
