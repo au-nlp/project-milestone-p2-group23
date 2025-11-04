@@ -6,14 +6,10 @@ The original SPoRC paper focuses on networks of _shared guests_ across shows —
 This project proposes a new network representation called the **Name Co-Mention Proximity Graph**, which captures relationships between people who are _talked about together_ in podcast transcripts.  
 Each node represents a person’s name mentioned in a podcast, and edges indicate frequent co-mentions within short textual windows or entire episodes. This structure reveals conversational connections, even among individuals who never appear together as guests.
 
----
-
 ## Graph Construction
 
 The foundation is straightforward: extract named entities from transcripts and connect those that co-occur within defined contexts.  
 The challenge — and the core research contribution — lies in constructing this graph _reliably and meaningfully_.
-
----
 
 ### 1. Text Preprocessing
 
@@ -29,8 +25,6 @@ Before entity recognition, we will experiment with several preprocessing strateg
   - Compare multiple preprocessing pipelines: raw text, stopword-removed text, and sentence-split text.
   - Use contextual sentence embeddings (e.g., _Sentence-BERT_) to preserve semantic proximity even if names don’t appear directly adjacent.
   - Measure downstream impact on entity recall and co-mention precision.
-
----
 
 ### 2. Entity Recognition and Normalization
 
@@ -58,8 +52,6 @@ This stage aims to detect personal names and unify their variants into canonical
 
 This unified approach yields a **clean, canonical set of nodes** — one per real-world individual — ready for co-mention graph construction.
 
----
-
 ### 3. Co-Mention Definition and Graph Building
 
 Once entities are recognized and normalized, we define how and when two names are “co-mentioned.”
@@ -79,8 +71,6 @@ Once entities are recognized and normalized, we define how and when two names ar
 - **Implementation**
   - Build and analyze graphs using libraries such as _NetworkX_ or _igraph_.
   - Store intermediate data (entity clusters, co-mention windows, weights) for reproducibility.
-
----
 
 ## Evaluation
 
@@ -105,8 +95,6 @@ Evaluating such graphs requires both structural and semantic perspectives.
    - Manually inspect representative clusters for interpretability.
    - Evaluate coherence of top names per cluster.
 
----
-
 ## Using the Graph
 
 Once built, the **Name Co-Mention Proximity Graph** enables community detection and labeling.
@@ -129,8 +117,6 @@ To interpret communities, extract the most distinctive linguistic and contextual
   - Use **prompt-based LLM labeling** to propose pseudo-labels automatically.
   - Optionally fine-tune a **lightweight classifier** on a few manually labeled clusters for scalable annotation.
 
----
-
 ## Expected Contributions
 
 This project bridges **text semantics**, **entity normalization**, and **graph-based community detection** to reveal how individuals are discussed together in conversational media.
@@ -142,8 +128,6 @@ This project bridges **text semantics**, **entity normalization**, and **graph-b
 3. Graph evaluation combining structural, semantic, and predictive analyses.
 4. A framework for automatic labeling and interpretation of discourse communities.
 
----
-
 ## Tools and Resources
 
 - **Entity Recognition & Linking:** spaCy, LUKE, DistilBERT-NER, Flair, BLINK, REL
@@ -152,8 +136,6 @@ This project bridges **text semantics**, **entity normalization**, and **graph-b
 - **Community Detection:** Louvain, Leiden, Infomap
 - **Topic Modeling:** LDA, BERTopic
 - **Salience Modeling:** Salience-BERT
-
----
 
 _This project aims to uncover how people are semantically connected through conversation, offering a novel way to study community formation in discourse._
 
