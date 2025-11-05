@@ -140,10 +140,10 @@ This project bridges **text semantics**, **entity normalization**, and **graph-b
 _This project aims to uncover how people are semantically connected through conversation, offering a novel way to study community formation in discourse._
 
 ### View some graphs
-- [Community](drafts/graph/community_graph.html)
-- [Community using bert and manual ner processing](drafts/graph/bert_graph.html)
-- [Category corelation (log scale)](drafts/graph/category_graph.html)
-- [Episode level coocurences of speakers](drafts/graph/metadata_persons_graph.html)
+- [Community](https://raw.githack.com/3lv/nlp_public_files/main/graph/community_graph.html)
+- [Community using bert and manual ner processing](https://raw.githack.com/3lv/nlp_public_files/main/graph/bert_graph.html)
+- [Category corelation (log scale)](https://raw.githack.com/3lv/nlp_public_files/main/graph/category_graph.html)
+- [Episode level coocurences of speakers](https://raw.githack.com/3lv/nlp_public_files/main/graph/metadata_persons_graph.html)
 
 
 
