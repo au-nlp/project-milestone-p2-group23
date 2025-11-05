@@ -139,7 +139,13 @@ This project bridges **text semantics**, **entity normalization**, and **graph-b
 
 _This project aims to uncover how people are semantically connected through conversation, offering a novel way to study community formation in discourse._
 
-[View the community graph](drafts/communities_graph.html)
+### View some graphs
+- [Community](drafts/graph/community_graph.html)
+- [Community using bert and manual ner processing](drafts/graph/bert_graph.html)
+- [Category corelation (log scale)](drafts/graph/category_graph.html)
+- [Episode level coocurences of speakers](drafts/graph/metadata_persons_graph.html)
+
+
 
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/hgNAtOO3)
 
