@@ -1,154 +1,48 @@
-# Community Graph from Name Co-Mention Proximity
+## Title: People connected by ideas and ideas connected by people.
 
-The **Structured Podcast Research Corpus (SPoRC)** provides a rich foundation for analyzing not only _what_ is said in podcasts but also _how_ communities emerge through discourse.  
-The original SPoRC paper focuses on networks of _shared guests_ across shows — a valuable production-level view, but one that overlooks how communities form at the conversational level.
+>> NOTE! I will rewrite this whole README.md, as it was written in one go without language in mind.
 
-This project proposes a new network representation called the **Name Co-Mention Proximity Graph**, which captures relationships between people who are _talked about together_ in podcast transcripts.  
-Each node represents a person’s name mentioned in a podcast, and edges indicate frequent co-mentions within short textual windows or entire episodes. This structure reveals conversational connections, even among individuals who never appear together as guests.
+I created the `main.ipynb` which definately needs more love in Data Visualization and Preprocessing:
 
-## Graph Construction
+When describing the relevant aspects of the data, and any other datasets you may intend to use, you should in particular show (non-exhaustive list):
 
-The foundation is straightforward: extract named entities from transcripts and connect those that co-occur within defined contexts.  
-The challenge — and the core research contribution — lies in constructing this graph _reliably and meaningfully_.
+    That you can handle the data in its size.
+    That you understand what’s in the data (formats, distributions, missing values, correlations, etc.).
+    That you considered ways to enrich, filter, transform the data according to your needs.
+    That you have a reasonable plan and ideas for methods you’re going to use, giving their essential mathematical details in the notebook.
+    That your plan for analysis and communication is reasonable and sound, potentially discussing alternatives to your choices that you considered but dropped.
 
-### 1. Text Preprocessing
 
-Before entity recognition, we will experiment with several preprocessing strategies to assess their effect on detection quality.
+Abstract:
+We would like to really understand the connection in the podcast ecosystem, that is, how information makes different podcasts similar.
+TODO: Complete me
 
-- **Research Questions:**
 
-  - Should stopwords be removed? While it can reduce noise, removing connectors like “and” may hinder detection of co-mentions such as _“Arne and Vlad.”_
-  - How does sentence segmentation or punctuation normalization affect mention grouping?
-  - Do conversational markers (“uh,” “you know,” etc.) harm or help context recognition?
+### Alternatives we considered:
 
-- **Implementation Plan:**
-  - Compare multiple preprocessing pipelines: raw text, stopword-removed text, and sentence-split text.
-  - Use contextual sentence embeddings (e.g., _Sentence-BERT_) to preserve semantic proximity even if names don’t appear directly adjacent.
-  - Measure downstream impact on entity recall and co-mention precision.
+We started by trying to extract the entities from the text which seemed to be people, with different methods, with the spacy library extracting `.label_ == PERSON`. Removing the stopwords definately helps, but merging longer length person seemd to be hard. Even with that fixed, you get a person like 'Joe Biden' or 'Joseph Robinette Biden Jr.'. Depending on the context, that reference may not be as obious, and that forms a problem in itself. We didn't want to invest any more time in this, as even with these extracted correctly, doing corelation based on how close they are to each other would involve some kind of euristic(such as being 3 sentences close) but this doesn't have any semantic meaning. So it would require some kind of model to do so, but this dataset doesn't seem to be born for this kind of task.
 
-### 2. Entity Recognition and Normalization
+Trying to using more what exists in the dataset: inferredHosts, inferredGuests, gives us an easier time, plotting using the same setup. Inffered Guests and Hosts may not be that relevant from a global point of view, not many podcasters are that known anyways, and even with 100k episodes, it doesn't make the graph thaaat conex.
+Some other easy things we could visualize is the category of the podcasts, and ofcourse they are really well connected.
 
-This stage aims to detect personal names and unify their variants into canonical entities. The process integrates **entity recognition**, **coreference resolution**, and **semantic consolidation** into a single coherent pipeline.
+Because the categories come from different sources(some may forgot to add important categories, or too many were applied, or really rare name used), we trained our own category labeler, that could be used to smoothen the categories, by repredicting them. Even tho they may not be that accurate from time to time, it could be used as a good metric to link episodes/podcasts or even people.
 
-- **Entity Detection**
+The graphs can be viewed here:
 
-  - Start with **spaCy’s NER** as a baseline.
-  - Compare transformer-based models fine-tuned for informal or conversational text, such as:
-    - _DistilBERT-NER_ or _Flair_ for lightweight contextual detection.
-    - _LUKE (Language Understanding with Knowledge-based Embeddings)_ for entity-rich domains.
-  - Incorporate **coreference resolution** (e.g., _SpanBERT_, _AllenNLP coref_) to link pronouns and repeated mentions.
-
-- **Entity Linking and Normalization**
-
-  - Use **entity linking** models (e.g., _BLINK_, _REL_) to map mentions to canonical entities in external knowledge bases when possible.
-  - For in-domain consistency, cluster entity embeddings using cosine similarity to merge variations like _“LeBron”_, _“LeBron James”_, and nicknames.
-  - Apply attention-based similarity or embedding-based salience scores to decide whether two mentions refer to the same individual.
-
-- **Relevance and Salience**
-  - Compute each entity’s contextual importance to filter out incidental mentions:
-    - Aggregate attention weights across mentions.
-    - Use _Salience-BERT_ or embedding-level contextual salience.
-    - Apply weighted TF-IDF over mention contexts to downweight low-relevance names.
-
-This unified approach yields a **clean, canonical set of nodes** — one per real-world individual — ready for co-mention graph construction.
-
-### 3. Co-Mention Definition and Graph Building
-
-Once entities are recognized and normalized, we define how and when two names are “co-mentioned.”
-
-- **Windowing Strategies**
-
-  - Test co-mentions within flexible text spans — sentence, paragraph, or speaker turn.
-  - Use **sliding windows** with semantic thresholds (based on cosine similarity between segment embeddings) to capture implicit contextual co-occurrence.
-
-- **Edge Weighting**
-
-  - Construct a **weighted undirected graph**:
-    - Nodes: canonical person entities.
-    - Edges: weighted by co-mention frequency × contextual similarity.
-  - Normalize weights by total mention frequency to avoid overemphasis on globally popular names.
-
-- **Implementation**
-  - Build and analyze graphs using libraries such as _NetworkX_ or _igraph_.
-  - Store intermediate data (entity clusters, co-mention windows, weights) for reproducibility.
-
-## Evaluation
-
-Evaluating such graphs requires both structural and semantic perspectives.
-
-1. **Graph Structural Validation**
-
-   - Analyze degree distributions, clustering coefficients, and modularity to ensure realistic social structure.
-   - Check stability across random subsets or episodes.
-
-2. **External Validation**
-
-   - Cross-reference detected communities with **Wikidata** or **Wikipedia categories**.
-   - Measure alignment between discovered clusters and known domains (e.g., “NBA players,” “politicians”).
-
-3. **Predictive Evaluation**
-
-   - Learn graph embeddings (_node2vec_, _GraphSAGE_) and test them on downstream tasks, such as predicting podcast categories or guest topics.
-   - Classification accuracy serves as an indirect quality metric.
-
-4. **Qualitative Analysis**
-   - Manually inspect representative clusters for interpretability.
-   - Evaluate coherence of top names per cluster.
-
-## Using the Graph
-
-Once built, the **Name Co-Mention Proximity Graph** enables community detection and labeling.
-
-### Community Detection
-
-Apply algorithms such as **Louvain**, **Leiden**, or **Infomap** to discover clusters of frequently co-mentioned names. These clusters represent _latent discourse communities_ — e.g., athletes, political figures, or cultural icons.
-
-### Cluster Interpretation and Labeling
-
-To interpret communities, extract the most distinctive linguistic and contextual signals from each cluster.
-
-- **Keyword and Topic Extraction**
-
-  - Aggregate co-occurring words from transcript contexts.
-  - Use **TF-IDF**, mutual information, or topic modeling methods (_LDA_, _BERTopic_) to summarize themes.
-  - Example: a cluster dominated by “LeBron James,” “NBA,” and “playoffs” may be labeled _Basketball_.
-
-- **Label Generation**
-  - Use **prompt-based LLM labeling** to propose pseudo-labels automatically.
-  - Optionally fine-tune a **lightweight classifier** on a few manually labeled clusters for scalable annotation.
-
-## Expected Contributions
-
-This project bridges **text semantics**, **entity normalization**, and **graph-based community detection** to reveal how individuals are discussed together in conversational media.
-
-**Outcomes:**
-
-1. A reproducible pipeline for constructing co-mention proximity graphs from podcast transcripts.
-2. Comparative evaluation of entity recognition and normalization strategies for informal speech.
-3. Graph evaluation combining structural, semantic, and predictive analyses.
-4. A framework for automatic labeling and interpretation of discourse communities.
-
-## Tools and Resources
-
-- **Entity Recognition & Linking:** spaCy, LUKE, DistilBERT-NER, Flair, BLINK, REL
-- **Coreference Resolution:** AllenNLP, SpanBERT
-- **Graph Analysis:** NetworkX, igraph, node2vec, GraphSAGE
-- **Community Detection:** Louvain, Leiden, Infomap
-- **Topic Modeling:** LDA, BERTopic
-- **Salience Modeling:** Salience-BERT
-
-_This project aims to uncover how people are semantically connected through conversation, offering a novel way to study community formation in discourse._
-
-### View some graphs
 - [Community](https://raw.githack.com/3lv/nlp_public_files/main/graph/community_graph.html)
 - [Community using bert and manual ner processing](https://raw.githack.com/3lv/nlp_public_files/main/graph/bert_graph.html)
 - [Category corelation (log scale)](https://raw.githack.com/3lv/nlp_public_files/main/graph/category_graph.html)
 - [Episode level coocurences of speakers](https://raw.githack.com/3lv/nlp_public_files/main/graph/metadata_persons_graph.html)
 
->> NOTE: The repo 'https://github.com/3lv/nlp_public_files' needs to be mantained as well for the render to work
+
+### Back to business
 
 
+Ideas discussed in podcasts is what brings listeners together. So we want to analyze how podcasts are grouped together by different ideas (not just topics/classes). How they react to new topics. Which one is the most up to date.
+Using a latent space representation of the topics would give us nothing more than some words that define the entire podcast category. We want to see what is discussed in an episode specifically, not some general topics. To do so, we want to see how appealing an "idea" or "query" is to some podcast/person. By training an sentence embedder, we can use these to compare using cosine similarity the relevance of the idea with reference to a specific epsiode. Now, having this, for a given podcast/group of podcasts(grouped by guests, categories etc.), we can see how an ideas relevance changes through time. Because of the very small gap that the episodes were recorded(2 month) only very specific ideas will show an interest in the curve, as they can rise and fall.
 
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/hgNAtOO3)
+The finality of this project is having a network connecting different podcats/categories of podcasts by ideas, and connecting ideas with podcast. With this research, it would enable to detect what ideas bring people together(categories) and which podcast are the most relevant for connecting two categoties.
 
-<img width="1110" height="574" alt="grafik" src="https://github.com/user-attachments/assets/907ebf33-01e6-4e0c-bea3-1285cdd59f6c" />
+Less abstract:
+Create a graph that has podcasts as nodes and some kind of inverse of the content similarity as the weight of the edges. Now you can find the shortest path from one podcast to a different podcast. Now, as you know the path, you also know what contents are on the path, and these are the ones you need to aproach more if you were to shift your audience to the dirrection of a different podcast.
+Adding to the content similarity, because we have a global view, we can scale it according to how fast it got adopted, or for how long relative to the others.
