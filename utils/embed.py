@@ -62,6 +62,7 @@ def embed_episodes_batched(
     agg="mean",
     max_len=256,
     batch_size=512,
+    device='cuda'
 ):
     episode_counts = []
     all_chunks = []
@@ -73,7 +74,7 @@ def embed_episodes_batched(
     all_embs = []
     for i in tqdm(range(0, len(all_chunks), batch_size)):
         batch = all_chunks[i:i+batch_size]
-        embs = embed_texts(model, tokenizer, batch, max_tokens=max_len, batch_size=batch_size)
+        embs = embed_texts(model, tokenizer, batch, max_tokens=max_len, batch_size=batch_size, device=device)
         all_embs.append(embs)
     all_embs = np.vstack(all_embs)
 
