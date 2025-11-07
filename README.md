@@ -22,11 +22,11 @@ First of all, we have to introduce a lot more work we have done:
 ### Alternatives we considered:
 TODO: Make this "Alternatives we considered" section more compact, without removing any of the actual information
 
-We started by trying to extract the entities from the text which seemed to be people, with different methods, with the spacy library extracting `.label_ == PERSON`. Removing the stopwords definately helps. Even with that fixed, you get a person like 'Joe Biden' or 'Joseph Robinette Biden Jr.'. Depending on the context, that reference may not be as obious, and that forms a problem in itself. We didn't want to invest any more time in this.
+We started by trying to extract the entities from the text which seemed to be people, with different methods, with the spacy library extracting `.label_ == PERSON`. Removing stopwords. Aditionally, comparing 'Joe Biden' or 'Joseph Robinette Biden Jr.' is a problem in itself. We didn't want to invest any more time in this.
 
 Using only the information form the dataset: `inferredHosts`, `inferredGuests`, gives us an easier time, plotting using the same setup. Looking at the graphs, they are not that connected so these columns are not that interesting this way.
 
-Some other easy things we could visualize is the category of the podcasts, and ofcourse they are really well connected.
+VIsualize category of the podcasts, and ofcourse they are really well connected.
 
 Because the categories come from different sources(distinct namings, sparse, etc.) (99 distinct categories), we trained our own category labeler, that could be used to smoothen the categories, by repredicting them. The categories are a simple deterministic way to filter things out. - `drafts/category_cls.ipynb`
 
