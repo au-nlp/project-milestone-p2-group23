@@ -43,6 +43,9 @@ def fetch_daily_prices(
     return prices
 
 
+# Ssr ftest is a metric to corelate 2 time series. We currently say that the idea scores
+# are behind the stock prices and that they can predict them. (lag vs lead)
+# TODO: Add lead
 def compute_ssr_ftest(daily_df, ticker, idea_score_column, maxlag=10):
     ticker_ret_col = f"{ticker}_ret"
     daily_df[ticker_ret_col] = np.log(daily_df[ticker]).diff()
@@ -57,10 +60,13 @@ def compute_ssr_ftest(daily_df, ticker, idea_score_column, maxlag=10):
     
     return lags
 
+# TODO: Add other metrics for correlation
+
 def get_significant_lags(lags, alpha=0.05):
     significant_lags = [lag for lag, p_value in lags if p_value < alpha]
     return significant_lags
 
+# Because ssr_ftest is not that intuitive, we provide a summary function
 def ssr_ftest_summary(lags, alpha=0.05):
     n_lags, p_values = zip(*lags)
     plt.stem(n_lags, p_values)
@@ -82,6 +88,7 @@ def ssr_ftest_summary(lags, alpha=0.05):
     Best lag is {best_lag} with p-value {next(p for l, p in lags if l == best_lag):.5f}(the smaller the better).
     """
 
+# TODO: Make this function more general, to accept multiple metrics
 def corelate_idea_with_stock_ssr_ftest(
     df,
     vec_column,

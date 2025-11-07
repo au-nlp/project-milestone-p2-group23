@@ -6,6 +6,7 @@ import torch.nn.functional as F
 
 from .metrics import score_ideas
 
+
 def mean_pool(last_hidden_state, attention_mask):
     mask = attention_mask.unsqueeze(-1).expand(last_hidden_state.size()).float()
     masked = last_hidden_state * mask
@@ -41,6 +42,11 @@ def chunk_by_tokens(tokenizer, text, max_len=256, stride=32):
             break
     return chunks
 
+# Because the episodes are long, we chunk them into smaller pieces, embed each piece,
+# then aggregate the piece embeddings into episode embedding
+# TODO: Play around with different aggregation methods
+
+@torch.no_grad()
 def embed_episodes(model, tokenizer, df, text_column='transcript', agg="max", max_len=256):
     episode_vecs = []
     for text in tqdm(df[text_column]):
@@ -56,6 +62,7 @@ def embed_episodes(model, tokenizer, df, text_column='transcript', agg="max", ma
     return np.vstack(episode_vecs)
 
 # To fully utilize gpu, we gonna group all chunks across episodes and embed in large batches
+@torch.no_grad()
 def embed_episodes_batched(
     model,
     tokenizer,

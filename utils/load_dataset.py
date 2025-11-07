@@ -7,6 +7,9 @@ from huggingface_hub import hf_hub_download
 from datasets import load_dataset
 
 
+# The datasets were not that trivial to load, using streaming=True was reading the whole file in memory
+# So we download the files and read them line by line with a limit
+
 def load_episodes_to_df(data_dir, limit=100_000):
     episode_path = hf_hub_download(
         repo_id="blitt/SPoRC",

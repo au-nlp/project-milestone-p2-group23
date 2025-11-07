@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
+# Bulid similarity graph from vector dataframe
 def build_graph_from_vec_df(vec_df, vec_column, weight_from_sim, node_column=None):
     edges = []
 
