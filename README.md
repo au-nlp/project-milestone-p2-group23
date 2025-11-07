@@ -3,11 +3,9 @@
 > Milestone P2 (proposal + proof of concept). This README states the project idea, feasibility, the current status and the plan. The final scope may be refined in P3.
 
 ## Abstract:
-We want to explore how podcasts are linked by ideas and how ideas are linked by podcasts. As ideas propagate, their signals may or may not relate financial markets. Using podcast transcript, we embed episodes and user-defined(or t5 generated) "ideas" into the same semantic space. We are gonna be using "ideas" alot, so watch out! We then score each episode's idea relevance via cosine similarity and track that score over time within and across shows, hosts, and categories. This produces time series (idea intensity, or `idea_score` as in the code) which may or may not corelate with market data and graphs linking podcasts/hosts by shared ideas and linking ideas to each other when they co-occur.
+We want to explore how podcasts are linked by ideas and how ideas are linked by podcasts. As ideas propagate, their signals may or may not relate financial markets. Using podcast transcript, we embed episodes and user-defined(or t5-generated) "ideas" into the same semantic space. We are gonna be using "ideas" alot, so watch out! We then score each episode's idea relevance via cosine similarity and track that score over time within and across shows, hosts, and categories. This produces time series (idea intensity, or `idea_score` as in the code) which may or may not corelate with market data and graphs linking podcasts/hosts by shared ideas and linking ideas to each other when they co-occur.
 
 Our proof-of-concept builds a pipeline for preprocessing, embedding, filtering and visualizing podcast-idea relations. We then align ideas with stocks(e.g. AAPL, BTC-USD) to explore correlations and lead-lag behaviour around key events (this is applied to the May-June interval, but the pipeline is time agnostic). It's hard to travel in this much amount of data. So.. the end goal is a practical, map to accompany your journey. It contains visual insights of which podcasts pick up which ideas, how fast, and how ideas connect communities. Now knowing better how the ideas are related, their dynamics and relations can anticipate market movements.
-
-The interval of 2 months is good enough, as with all the information from one month, it is possible to predict certain movements from the upcomming month. You just need to analyze it well. 
 
 ## Contributions
 - Practical tooling: one-notebook pipeline, cached embeddings, interactive graphs, and concise summaries.
@@ -68,7 +66,7 @@ Because the categories come from different sources(distinct namings, sparse, etc
 - Just chill coding and imporving (until 19 dec)
 
 ### Organization within the team.
-As you know, we lost our team mate 'Inaki' :(. We got a couple meetings with him showing how to use python, but we couldn't change the faith in the end. We even had 1-1 sessions. Anyways, the organization needs and will be much better from now on. Because the project was at the begining, it fastly developed and didn't allow all the members to contribute the same. Following the timeline, each week will have a meeting in the weekend were we show that we achieved the intermediate goals.
+As you know, we lost our team mate 'Inaki' :(. We got a couple meetings with him showing how to use python, but we couldn't change the faith in the end. Anyways, the organization needs and will be much better from now on. Because the project was at the begining, it fastly developed and didn't allow all the members to contribute the same. Following the timeline, each week will have a meeting in the weekend were we show that we achieved the intermediate goals.
 
 # Appendix
 
