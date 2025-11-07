@@ -29,7 +29,7 @@ We started by trying to extract the entities from the text which seemed to be pe
 Trying to using more what exists in the dataset: inferredHosts, inferredGuests, gives us an easier time, plotting using the same setup. Inffered Guests and Hosts may not be that relevant from a global point of view, not many podcasters are that known anyways, and even with 100k episodes, it doesn't make the graph thaaat conex.
 Some other easy things we could visualize is the category of the podcasts, and ofcourse they are really well connected.
 
-Because the categories come from different sources(some may forgot to add important categories, or too many were applied, or really rare name used) (a total of 99 distinct categories), we trained our own category labeler, that could be used to smoothen the categories, by repredicting them. The categories are a simple deterministic way to filter things out, but currently having to many names is not that intuitive. (The model is work in progress, as we trained with all the 99 labels just to see the capabilities, it needs more cleaning of sparce categories and updates). - `drafts/category_cls.ipynb`
+Because the categories come from different sources(some may forgot to add important categories, or too many were applied, or really rare name used) (a total of 99 distinct categories), we trained our own category labeler, that could be used to smoothen the categories, by repredicting them. The categories are a simple deterministic way to filter things out. - `drafts/category_cls.ipynb`
 
 
 ### Back to business, current workflow:
