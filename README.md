@@ -30,7 +30,7 @@ Using only the information form the dataset: `inferredHosts`, `inferredGuests`, 
 
 Some other easy things we could visualize is the category of the podcasts, and ofcourse they are really well connected.
 
-Because the categories come from different sources(some may forgot to add important categories, or too many were applied, or really rare name used) (a total of 99 distinct categories), we trained our own category labeler, that could be used to smoothen the categories, by repredicting them. The categories are a simple deterministic way to filter things out. - `drafts/category_cls.ipynb`
+Because the categories come from different sources(distinct namings, sparse, etc.) (99 distinct categories), we trained our own category labeler, that could be used to smoothen the categories, by repredicting them. The categories are a simple deterministic way to filter things out. - `drafts/category_cls.ipynb`
 
 
 ### Back to business, current workflow:
