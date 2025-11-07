@@ -1,12 +1,26 @@
-## Title: People connected by ideas and ideas connected by people.
+# Information flows, but can you catch it?
 
-I created the `main.ipynb` which definately needs more love in Data Visualization and Preprocessing:
+> Milestone P2 (proposal + proof of concept). This README states the project idea, feasibility, the current status and the plan. The final scope may be refined in P3.
 
+## Abstract:
+-----add
+We want to explore how podcasts are linked by ideas and how ideas are linked by podcasts. As ideas propagate, their signals may or may not relate financial markets. Using podcast transcript, we embed episodes and user-defined(or t5 generated) "ideas" into the same semantic space. We are gonna be using "ideas" alot, so watch out! We then score each episode's idea relevance via cosine similarity and track that score over time within and across shows, hosts, and categories. This produces time series (idea intensity, or `idea_score` as in the code) which may or may not corelate with market data and graphs linking podcasts/hosts by shared ideas and linking ideas to each other when they co-occur.
 
-Abstract:
-We would like to really understand the connection in the podcast ecosystem, that is, how information makes different podcasts similar. We would like to easily filter for episodes, see how information progresses through time
-TODO: Rewrite this entirely as it needs to resamble the new project structure. Currently the finality is corelating stocks with ideas and ideas with stocks.
+Our proof-of-concept builds a pipeline for preprocessing, embedding, filtering and visualizing podcast-idea relations. We then align ideas with stocks(e.g. AAPL, BTC-USD) to explore correlations and lead-lag behaviour around key events (this is applied to the May-June interval, but the pipeline is time agnostic). It's hard to travel in this much amount of data. So.. the end goal is a practical, map to accompany your journey. It contains visual insights of which podcasts pick up which ideas, how fast, and how ideas connect communities. Now knowing better how the ideas are related, their dynamics and relations can anticipate market movements.
 
+The interval of 2 months is good enough, as with all the information from one month, it is possible to predict certain movements from the upcomming month. You just need to analyze it well. 
+
+## Contributions
+- Practical tooling: one-notebook pipeline, cached embeddings, interactive graphs, and concise summaries.
+- Market linkage: align idea intensity with asset returns to test simple predictive structures.
+
+## Proposed additional datasets
+Our dataset is already very very rich, containing 20gb of information. We are only adding the market data from the May-June interval as offered by `yfinance` library (it may change, doesn't really matter).
+
+## Methods:
+> The methods are briefely discussed as the code shows the flow better.
+
+First of all, we have to introduce a lot more work we have done:
 
 ### Alternatives we considered:
 TODO: Make this "Alternatives we considered" section more compact, without removing any of the actual information
@@ -16,32 +30,10 @@ We started by trying to extract the entities from the text which seemed to be pe
 Trying to using more what exists in the dataset: inferredHosts, inferredGuests, gives us an easier time, plotting using the same setup. Inffered Guests and Hosts may not be that relevant from a global point of view, not many podcasters are that known anyways, and even with 100k episodes, it doesn't make the graph thaaat conex.
 Some other easy things we could visualize is the category of the podcasts, and ofcourse they are really well connected.
 
-Because the categories come from different sources(some may forgot to add important categories, or too many were applied, or really rare name used), we trained our own category labeler, that could be used to smoothen the categories, by repredicting them. Even tho they may not be that accurate from time to time, it could be used as a good metric to link episodes/podcasts or even people.
-
-Some versions of the graphs can be viewed here:
-
-- [Community](https://raw.githack.com/3lv/nlp_public_files/main/graph/community_graph.html)
-- [Community using bert and manual ner processing](https://raw.githack.com/3lv/nlp_public_files/main/graph/bert_graph.html)
-- [Category corelation (log scale)](https://raw.githack.com/3lv/nlp_public_files/main/graph/category_graph.html)
-- [Episode level coocurences of speakers](https://raw.githack.com/3lv/nlp_public_files/main/graph/metadata_persons_graph.html)
+Because the categories come from different sources(some may forgot to add important categories, or too many were applied, or really rare name used) (a total of 99 distinct categories), we trained our own category labeler, that could be used to smoothen the categories, by repredicting them. The categories are a simple deterministic way to filter things out, but currently having to many names is not that intuitive.
 
 
 ### Back to business
-
-Ideas discussed in podcasts is what brings listeners together. So we want to analyze how podcasts are grouped together by different ideas (not just topics/classes). How they react to new topics. Which one is the most up to date.
-Using a latent space representation of the topics would give us nothing more than some words that define the entire podcast category. We want to see what is discussed in an episode specifically, not some general topics. To do so, we want to see how appealing an "idea" or "query" is to some podcast/person. By training an sentence embedder, we can use these to compare using cosine similarity the relevance of the idea with reference to a specific epsiode. Now, having this, for a given podcast/group of podcasts(grouped by guests, categories etc.), we can see how an ideas relevance changes through time. Because of the very small gap that the episodes were recorded(2 month) only very specific ideas will show an interest in the curve, as they can rise and fall.
-
-The finality of this project is having a network connecting different podcats/categories of podcasts by ideas, and connecting ideas with podcast. With this research, it would enable to detect what ideas bring people together(categories) and which podcast are the most relevant for connecting two categoties.
-
-Less abstract:
-Create a graph that has podcasts as nodes and some kind of inverse of the content similarity as the weight of the edges. Now you can find the shortest path from one podcast to a different podcast. Now, as you know the path, you also know what contents are on the path, and these are the ones you need to aproach more if you were to shift your audience to the dirrection of a different podcast.
-Adding to the content similarity, because we have a global view, we can scale it according to how fast it got adopted, or for how long relative to the others.
-
-
-
-
-### Retake on flow of the main.ipynb and the project itself:
-
 
 Analyzing the podcast(or the news).
 
@@ -94,7 +86,10 @@ It's impossible to follow all the news and listen to all podcast. Now as you can
 - Consider training a model to extract more impactful/recent information rather than content from boring discussion.
 - Exclude low information days from trading
 - Because the code is general enough, we can iterate over ideas generated by the t5 model and see which have more or less corelation with different traded instruments("AAPL", "BTC-USD" etc.). (Instead of searching with ideas by hand). Play around with bigger t5 models and with the prompt ofcourse. 
-- Have better plots denoting the corelation and the "tradability" of the market according to our information.
+- Have better plots(different metrics) denoting the corelation and the "tradability" of the market according to our information.
+
+### Organization within the team.
+As you know, we lost our team mate 'Inaki' :(. We got a couple meetings with him showing how to use python, but we couldn't change the faith in the end. We even had 1-1 sessions. Anyways, the organization needs and will be much better from now on. Because the project was at the begining, it fastly developed and didn't allow all the members to contribute the same. Following the timeline, each week will have a meeting in the weekend were we show that we achieved the intermediate goals.
 
 # Appendix
 
