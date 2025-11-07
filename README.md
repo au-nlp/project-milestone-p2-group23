@@ -5,14 +5,14 @@
 ## Abstract:
 We want to explore how podcasts are linked by ideas and how ideas are linked by podcasts. As ideas propagate, their signals may or may not relate financial markets. Using podcast transcript, we embed episodes and user-defined(or t5-generated) "ideas" into the same semantic space. We are gonna be using "ideas" alot, so watch out! We then score each episode's idea relevance via cosine similarity and track that score over time within and across shows, hosts, and categories. This produces time series (idea intensity, or `idea_score` as in the code) which may or may not corelate with market data and graphs linking podcasts/hosts by shared ideas and linking ideas to each other when they co-occur.
 
-Our proof-of-concept builds a pipeline for preprocessing, embedding, filtering and visualizing podcast-idea relations. We then align ideas with stocks(e.g. AAPL, BTC-USD) to explore correlations and lead-lag behaviour around key events (this is applied to the May-June interval, but the pipeline is time agnostic). It's hard to travel in this much amount of data. So.. the end goal is a practical, map to accompany your journey. It contains visual insights of which podcasts pick up which ideas, how fast, and how ideas connect communities. Now knowing better how the ideas are related, their dynamics and relations can anticipate market movements.
+ It's hard to travel in this much amount of data. So.. the end goal is a practical, map to accompany your journey. It contains visual insights of which podcasts pick up which ideas, how fast, how they connect. Now knowing better how the ideas are related, their dynamics and relations can anticipate market movements.
 
 ## Contributions
 - Practical tooling: one-notebook pipeline, cached embeddings, interactive graphs, and concise summaries.
 - Market linkage: align idea intensity with asset returns to test simple predictive structures.
 
 ## Proposed additional datasets
-Our dataset is already very very rich, containing 20gb of information. We are only adding the market data from the May-June interval as offered by `yfinance` library (it may change, doesn't really matter).
+Our dataset is already very rich, containing 20gb compressed-info. We are only adding the market data from the May-June interval as offered by `yfinance` library (it may change, doesn't really matter).
 
 ## Methods:
 > The methods are briefely discussed as the code shows the flow better.
