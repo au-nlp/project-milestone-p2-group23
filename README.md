@@ -107,3 +107,5 @@ It's impossible to follow all the news and listen to all podcast. Now as you can
 - drafts/ - A lot of .ipynbs which do things separately, used for testing around, they make or may not make it to the final main.ipynb
 - features/ - Contains preprocessed versioned features for stability and reusability.
 - utils/ - Contains a bunch of .py files with helper functions to make the main.ipynb clean.
+
+TODO: Write the timeline

@@ -4,6 +4,8 @@ from tqdm import tqdm
 
 import torch.nn.functional as F
 
+from .metrics import score_ideas
+
 def mean_pool(last_hidden_state, attention_mask):
     mask = attention_mask.unsqueeze(-1).expand(last_hidden_state.size()).float()
     masked = last_hidden_state * mask
@@ -91,3 +93,33 @@ def embed_episodes_batched(
         start += count
 
     return np.vstack(episode_vecs)
+
+
+# TODO: impl
+#def process_and_save_embeddings()
+
+def score_df_by_ideas(
+    df,
+    vec_column,
+    idea_vecs,
+    score_columns=None,
+    device='cuda',
+    inplace=True # If false, return just the scores
+):
+    if score_columns is None:
+        if len(idea_vecs) == 1:
+            score_columns = ["idea_score"]
+        else:
+            score_columns = [f"idea_score_{i}" for i in range(len(idea_vecs))]
+    else:
+        assert len(score_columns) == len(idea_vecs), "Length of score_columns must match number of idea_vecs"
+
+    scores = score_ideas(df[vec_column].tolist(), idea_vecs)
+
+    if not inplace:
+        return scores
+
+    for i, col in enumerate(score_columns):
+        df[col] = scores[:, i]
+
+    return df
