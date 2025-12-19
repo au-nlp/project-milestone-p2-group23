@@ -60,7 +60,9 @@ The core logic is contained entirely within `main.ipynb`.
    ```
 3. **Create Hugging Face Access Token**:
    Create a valid Hugging Face token and insert into main.pynb.
-4. **Run Pipeline**:
+4. **Download Embeddings**:
+   Download the embeddings from the google drive link references in external resources.
+5. **Run Pipeline**:
    Execute `main.ipynb` sequentially to reproduce the embeddings, knowledge graphs, and correlation plots.
 
 ## 🔗 External Resources
