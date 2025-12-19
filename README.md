@@ -25,8 +25,8 @@ _(Please update the table below with your specific group members and their contr
 
 | Team Member      | Contributions |
 | :--------------- | :------------ |
-| **Vlad Vladutu** | []            |
-| **Arne Wiese**   | []            |
+| **Vlad Vladutu** | [Most of the code, Added details to latex] |
+| **Arne Wiese**   | [Some visualizations, Initial latex structure] |
 
 ## Repository Structure
 
@@ -40,7 +40,6 @@ Per the P3 requirements, the main logic is consolidated into a single notebook, 
   5.  Graph construction
   6.  Graph visualization
   7.  Stock Market Correlation
-- `utils/` - Contains external scripts and helper functions (e.g., `load_dataset.py`) called by the main notebook.
 - `report.pdf` - The final project report.
 - `assets/` - Static assets (images/icons) for notebook previews.
 - `features/` - Preprocessed versioned features for reproducibility.
@@ -51,13 +50,11 @@ The core logic is contained entirely within `main.ipynb`.
 
 1. **Create and activate the conda environment**:
    ```bash
-   conda create -n nlp_project python=3.10 -y
+   conda create -n nlp_project python=3.13.1 -y
    conda activate nlp_project
    ```
 2. **Install Dependencies**:
-   ```python
-   pip install -r requirements.txt
-   ```
+   - Installed when running the notebook
 3. **Create Hugging Face Access Token**:
    Create a valid Hugging Face token and insert into main.pynb.
 4. **Download Embeddings**:
