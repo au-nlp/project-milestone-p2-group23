@@ -7,6 +7,13 @@ Explore how podcasts are linked by ideas. As ideas propagate, their signals may 
 
  It's hard to travel in this much amount of data. So.. the end goal is a practical, map to accompany your journey. It contains visual insights of which podcasts pick up which ideas, how fast, how they connect. Now knowing better how the ideas are related, their dynamics and relations can anticipate market movements.
 
+## Notebook quickstart (cleaned main.ipynb)
+- Load SPoRC episodes via utils/load_dataset with optional HF_TOKEN; default limit keeps runs quick.
+- Visualize missingness, dates, transcript lengths, and top categories/people to sanity-check coverage.
+- Use v0.1.5 segment embeddings (or set PROCESS_SEGMENTS=True) to attach idea-aware scores with top-k pooling.
+- Track daily idea intensity and compare against tickers with utils.stocks.correlate_idea_with_stock (Pearson/Spearman + SSR F-test).
+- Cached shards live in features/episode_vecs_v0.1.5; bump the version in the notebook to swap embedding models.
+
 ## Contributions
 - Practical tooling: one-notebook pipeline, cached embeddings, interactive graphs, and concise summaries.
 - Market linkage: align idea intensity with asset returns to test simple predictive structures.

@@ -7,10 +7,12 @@ import seaborn as sns
 import itertools
 import pandas as pd
 import networkx as nx
-#from pathlib import Path
+# from pathlib import Path
+
 
 def view_image(img_path, width=600):
     display(Image(filename=img_path, width=width))
+
 
 def view_images(pattern, cols=6):
     display(HTML(
@@ -19,13 +21,16 @@ def view_images(pattern, cols=6):
         + "</div>"
     ))
 
+
 def view_md(md_path):
     with open(md_path, 'r', encoding='utf-8') as f:
         md_content = f.read()
     display(Markdown(md_content))
 
+
 def plot_transcript_length_distribution(episode_df):
-    episode_df["transcriptLength"] = episode_df["transcript"].apply(lambda x: len(x.split()))
+    episode_df["transcriptLength"] = episode_df["transcript"].apply(
+        lambda x: len(x.split()))
     plt.figure(figsize=(10, 6))
     ax = sns.histplot(episode_df["transcriptLength"], bins=50, kde=True)
     plt.title("Transcript Length Distribution")
@@ -33,11 +38,19 @@ def plot_transcript_length_distribution(episode_df):
     plt.ylabel("Frequency")
     plt.show()
 
-def plot_category_distribution(episode_df, top_n_categories=10):
-    category_columns = [f"category{i}" for i in range(1, top_n_categories + 1) if f"category{i}" in episode_df.columns]
-    category_counts = episode_df[category_columns].melt(value_name="category")["category"].value_counts().reset_index()
-    category_counts
-    sns.barplot(category_counts, x="category", y="count")
+
+def plot_category_distribution(episode_df, top_n_categories=10, top_n=30):
+    category_columns = [f"category{i}" for i in range(
+        1, top_n_categories + 1) if f"category{i}" in episode_df.columns]
+    category_counts = episode_df[category_columns].melt(
+        value_name="category")["category"].value_counts().head(top_n).reset_index()
+    sns.barplot(category_counts, y="category", x="count", orient="h")
+    plt.xlabel("Count")
+    plt.ylabel("Category")
+    plt.title(f"Top {top_n} Categories Distribution")
+    plt.tight_layout()
+    plt.show()
+
 
 def plot_missing_values(df, columns=None, ax=None, title="Missing Values in each column"):
     if columns is None:
@@ -55,8 +68,10 @@ def plot_missing_values(df, columns=None, ax=None, title="Missing Values in each
 
     return ax
 
+
 def plot_appearances(df, column, top_n=20):
-    all_names = list(itertools.chain.from_iterable(df[column].dropna().tolist()))
+    all_names = list(itertools.chain.from_iterable(
+        df[column].dropna().tolist()))
     name_counts = pd.Series(all_names).value_counts().head(top_n)
 
     plt.figure(figsize=(10, 6))
@@ -65,6 +80,7 @@ def plot_appearances(df, column, top_n=20):
     plt.xlabel("Number of Appearances")
     plt.ylabel(column)
     plt.show()
+
 
 def plot_animated_graph(G, save_path):
     net = Network(

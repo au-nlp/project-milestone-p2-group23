@@ -29,5 +29,16 @@ Embedings for episodes meaning, used for comparisons(cosine similarity)
   - This version is based on "max" aggregating
 
 - v0.1.4:
+
   - The previous version is based on `sentence-transformers/all-MiniLM-L6-v2` model
   - This version is based on `BAAI/bge-small-en-v1.5` model
+
+- v0.1.5:
+  - The `BAAI/bge-small-en-v1.5` encoder
+  - Mean aggregation
+
+- v0.1.6:
+  - Store per-segment embeddings for each episode (no aggregation) to enable idea-aware pooling
+  - Same chunking as previous versions (`max_len=256`, `stride=32`) but saved as ragged tensors per episode
+  - Add idea-level aggregation functions: top-k mean, log-sum-exp (soft) pooling, and % above threshold
+  - Designed to generate idea-specific episode embeddings on the fly without loading all segments into a single DataFrame

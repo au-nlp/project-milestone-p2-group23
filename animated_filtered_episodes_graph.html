@@ -1,0 +1,171 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 1600px;
+                 height: 1000px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "Digital and Innovation in Manufacturing with Dr Nick Wright", "label": "Digital and Innovation in Manufacturing with Dr Nick Wright", "shape": "dot", "size": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Episode #13 \u2013 Building the New Normal NOW: 7 Actions for Success", "label": "Episode #13 \u2013 Building the New Normal NOW: 7 Actions for Success", "shape": "dot", "size": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Augmented Intelligence with AI in Manufacturing - Paul Boris", "label": "Augmented Intelligence with AI in Manufacturing - Paul Boris", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Episode 10: We interview Shaun and hear about the state of the RPA nation", "label": "Episode 10: We interview Shaun and hear about the state of the RPA nation", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "How Food and Drink Companies can Thrive Post-Covid19 with Nicki Hunt", "label": "How Food and Drink Companies can Thrive Post-Covid19 with Nicki Hunt", "shape": "dot", "size": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "6. Hard Reset: What\u0027s Next for Office Furniture?", "label": "6. Hard Reset: What\u0027s Next for Office Furniture?", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Engineering business success whilst navigating Covid-19 - John Walker", "label": "Engineering business success whilst navigating Covid-19 - John Walker", "shape": "dot", "size": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Enterprises looking for Sprinters to re-ignite the Value Chain", "label": "Enterprises looking for Sprinters to re-ignite the Value Chain", "shape": "dot", "size": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Featured Interview with Indranil Ghosh", "label": "Featured Interview with Indranil Ghosh", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "#647 Dr. Akhil Gupta - Globalization \u0026 Sustainability", "label": "#647 Dr. Akhil Gupta - Globalization \u0026 Sustainability", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Valley Nordic S2 E17: Fintech", "label": "Valley Nordic S2 E17: Fintech", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "S1E11: Digital Cash: Rewiring Payments and Remittances with Jack Nikogosian, CEO of Aryze", "label": "S1E11: Digital Cash: Rewiring Payments and Remittances with Jack Nikogosian, CEO of Aryze", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "E1 - Twitter is Westworld Incarnate and special guest, Sridhar Solur", "label": "E1 - Twitter is Westworld Incarnate and special guest, Sridhar Solur", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Increasing Product Adoption", "label": "Increasing Product Adoption", "shape": "dot", "size": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Product UX Research \u0026 Design", "label": "Product UX Research \u0026 Design", "shape": "dot", "size": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "038: Media Buying And Platform Development, With eNabled Software Founder Conrad Brits", "label": "038: Media Buying And Platform Development, With eNabled Software Founder Conrad Brits", "shape": "dot", "size": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "King Sidharth \u2013 Head of Design and Product at Headout \u2013 Whiteboard.fm #012", "label": "King Sidharth \u2013 Head of Design and Product at Headout \u2013 Whiteboard.fm #012", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Cultivating a Career of Creativity", "label": "Cultivating a Career of Creativity", "shape": "dot", "size": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Marketing with Purpose - Natalie Riviere", "label": "Marketing with Purpose - Natalie Riviere", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Founder Talk: Dawn Myers (The MOST)", "label": "Founder Talk: Dawn Myers (The MOST)", "shape": "dot", "size": 7}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Reimagining the Pharma-Physician Communication Dynamic", "label": "Reimagining the Pharma-Physician Communication Dynamic", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Customer Experience in Healthcare", "label": "Customer Experience in Healthcare", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Africa\u0027s Untapped Potential for Fintechs and Payments with Marek Zmyslowski: Ep 101", "label": "Africa\u0027s Untapped Potential for Fintechs and Payments with Marek Zmyslowski: Ep 101", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "\u0027O\u0027 Adeyemi: Global Partnerships \u0026 Expansion, Flutterwave -  From Payments to E-Commerce", "label": "\u0027O\u0027 Adeyemi: Global Partnerships \u0026 Expansion, Flutterwave -  From Payments to E-Commerce", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "S1E10: Blockchain and The Internet of Things (IoT) with David S\u00f8nsteb\u00f8, Founder of IOTA", "label": "S1E10: Blockchain and The Internet of Things (IoT) with David S\u00f8nsteb\u00f8, Founder of IOTA", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Self Sovereign Identity with Drummond Reed, CTO at Evernym", "label": "Self Sovereign Identity with Drummond Reed, CTO at Evernym", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Wireless Infrastructure: 2020 Vision With Jonathan Adelstein", "label": "Wireless Infrastructure: 2020 Vision With Jonathan Adelstein", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Military Veterans Enabling 5G Deployments With Carrie Shyack", "label": "Military Veterans Enabling 5G Deployments With Carrie Shyack", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "The biggest challenges facing B2B Product Marketers today with Sean Lauer of Mural ", "label": "The biggest challenges facing B2B Product Marketers today with Sean Lauer of Mural ", "shape": "dot", "size": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Episode 25: Mastering Customer Experience with Scott Braun", "label": "Episode 25: Mastering Customer Experience with Scott Braun", "shape": "dot", "size": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "How John Tabis Of The Bouqs Company Is Bringing Flowers To Every Moment Of Life", "label": "How John Tabis Of The Bouqs Company Is Bringing Flowers To Every Moment Of Life", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "#638 Dean Waters - Cannabis Storytelling", "label": "#638 Dean Waters - Cannabis Storytelling", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "RADIO by Jack Roberts #006 - Richard Reid", "label": "RADIO by Jack Roberts #006 - Richard Reid", "shape": "dot", "size": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ryan Gill On How Brands Can Land The Best Creative Talent", "label": "Ryan Gill On How Brands Can Land The Best Creative Talent", "shape": "dot", "size": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "FI - Everett Berry (Perceive) On Spatial Intelligence ", "label": "FI - Everett Berry (Perceive) On Spatial Intelligence ", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Product Lifecycle Management with Lucy Blackley, CEO of Bombyx PLM", "label": "Product Lifecycle Management with Lucy Blackley, CEO of Bombyx PLM", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Revenue is Hype; Net Cash is King", "label": "Revenue is Hype; Net Cash is King", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "E46: Raising Series A round during a Pandemic | Mohammed Aldossary, Sary", "label": "E46: Raising Series A round during a Pandemic | Mohammed Aldossary, Sary", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "#22 \u2192 Charlie Feng: What\u0027s the Next Bicycle?", "label": "#22 \u2192 Charlie Feng: What\u0027s the Next Bicycle?", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1742 How Elastic.io Sold, Got Earnout and Hit $6m ARR in PaaS Space", "label": "1742 How Elastic.io Sold, Got Earnout and Hit $6m ARR in PaaS Space", "shape": "dot", "size": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1761 Changelog Software Hits $650k Revenue, Bootstrapped From Spain", "label": "1761 Changelog Software Hits $650k Revenue, Bootstrapped From Spain", "shape": "dot", "size": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1763 $4m ARR Company Burned $1.7m Last Year, Good or Bad?", "label": "1763 $4m ARR Company Burned $1.7m Last Year, Good or Bad?", "shape": "dot", "size": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1748 \u0027Wouldn\u0027t Be Surprise If We Hit $50M This Year\u0027 says 3d Home Modeling CEO", "label": "1748 \u0027Wouldn\u0027t Be Surprise If We Hit $50M This Year\u0027 says 3d Home Modeling CEO", "shape": "dot", "size": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1754 Parker Conrad Gave Rippling CTO 40%, Kept 60%, 2,000 Customers \u0027$36m ARR Not Far Off\u0027", "label": "1754 Parker Conrad Gave Rippling CTO 40%, Kept 60%, 2,000 Customers \u0027$36m ARR Not Far Off\u0027", "shape": "dot", "size": 6}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1749 How He Hit $9m Revenues Paying Resellers 24% Kickbacks", "label": "1749 How He Hit $9m Revenues Paying Resellers 24% Kickbacks", "shape": "dot", "size": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "1753 \u0027IoT AgTech Device Hits $1m Software Run Rate and $1.2m in Hardware Sales. Can He Get $60m Valuation? \u0027", "label": "1753 \u0027IoT AgTech Device Hits $1m Software Run Rate and $1.2m in Hardware Sales. Can He Get $60m Valuation? \u0027", "shape": "dot", "size": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "On the Future of More Fulfilling Work\u2014John Hagel\u2014Deloitte\u2019s Center for the Edge", "label": "On the Future of More Fulfilling Work\u2014John Hagel\u2014Deloitte\u2019s Center for the Edge", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "#639 Paul D. Miller aka DJ Spooky - Tech, Art, Music", "label": "#639 Paul D. Miller aka DJ Spooky - Tech, Art, Music", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "#660 Jeff Desjardins - Visual Capitalist", "label": "#660 Jeff Desjardins - Visual Capitalist", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "9: Nishant Parashar - Part 6/8 :  Building an Authentic Indian Story on Engagement", "label": "9: Nishant Parashar - Part 6/8 :  Building an Authentic Indian Story on Engagement", "shape": "dot", "size": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "13: Nishant Parashar - Highlights - Founder, Engage4more", "label": "13: Nishant Parashar - Highlights - Founder, Engage4more", "shape": "dot", "size": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "12: Nishant Parashar - Full Converstation - Founder, Engage4more", "label": "12: Nishant Parashar - Full Converstation - Founder, Engage4more", "shape": "dot", "size": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Crowdsourcing, purpose and understanding your why - chatting with Epi Ludvik", "label": "Crowdsourcing, purpose and understanding your why - chatting with Epi Ludvik", "shape": "dot", "size": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ep 48 / HOW THE GOOGLE MAPS PLATFORM CHANGES BUSINESS MODELS \u0026 THE FUTURE / Francisco Irao, Google", "label": "Ep 48 / HOW THE GOOGLE MAPS PLATFORM CHANGES BUSINESS MODELS \u0026 THE FUTURE / Francisco Irao, Google", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ep 46 / LEADING PEOPLE AND HIGH PERFORMING PARTNERSHIPS AT GOOGLE / Eric Rosenkranz, Google Cloud", "label": "Ep 46 / LEADING PEOPLE AND HIGH PERFORMING PARTNERSHIPS AT GOOGLE / Eric Rosenkranz, Google Cloud", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Bonus Episode Mailbag Extra!", "label": "Bonus Episode Mailbag Extra!", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Episode 28: Moving up against the market", "label": "Episode 28: Moving up against the market", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "FI - Matt Shumer (Visos) On The Future of Virtual Reality ", "label": "FI - Matt Shumer (Visos) On The Future of Virtual Reality ", "shape": "dot", "size": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "FI - Kai Frazier (Kai XR) On VR For Kids", "label": "FI - Kai Frazier (Kai XR) On VR For Kids", "shape": "dot", "size": 1}]);
+                  edges = new vis.DataSet([{"from": "Digital and Innovation in Manufacturing with Dr Nick Wright", "to": "Episode #13 \u2013 Building the New Normal NOW: 7 Actions for Success", "width": 1.2142901420593262}, {"from": "Digital and Innovation in Manufacturing with Dr Nick Wright", "to": "Augmented Intelligence with AI in Manufacturing - Paul Boris", "width": 1.1818864345550537}, {"from": "Digital and Innovation in Manufacturing with Dr Nick Wright", "to": "Episode 10: We interview Shaun and hear about the state of the RPA nation", "width": 1.2475221157073975}, {"from": "Digital and Innovation in Manufacturing with Dr Nick Wright", "to": "How Food and Drink Companies can Thrive Post-Covid19 with Nicki Hunt", "width": 1.2458200454711914}, {"from": "Episode #13 \u2013 Building the New Normal NOW: 7 Actions for Success", "to": "6. Hard Reset: What\u0027s Next for Office Furniture?", "width": 1.2311875820159912}, {"from": "Episode #13 \u2013 Building the New Normal NOW: 7 Actions for Success", "to": "How Food and Drink Companies can Thrive Post-Covid19 with Nicki Hunt", "width": 1.1998367309570312}, {"from": "Episode #13 \u2013 Building the New Normal NOW: 7 Actions for Success", "to": "Engineering business success whilst navigating Covid-19 - John Walker", "width": 1.2348915338516235}, {"from": "Episode #13 \u2013 Building the New Normal NOW: 7 Actions for Success", "to": "Enterprises looking for Sprinters to re-ignite the Value Chain", "width": 1.2194397449493408}, {"from": "How Food and Drink Companies can Thrive Post-Covid19 with Nicki Hunt", "to": "Enterprises looking for Sprinters to re-ignite the Value Chain", "width": 1.2420233488082886}, {"from": "Featured Interview with Indranil Ghosh", "to": "#647 Dr. Akhil Gupta - Globalization \u0026 Sustainability", "width": 1.2362606525421143}, {"from": "Valley Nordic S2 E17: Fintech", "to": "S1E11: Digital Cash: Rewiring Payments and Remittances with Jack Nikogosian, CEO of Aryze", "width": 1.2124347686767578}, {"from": "E1 - Twitter is Westworld Incarnate and special guest, Sridhar Solur", "to": "Increasing Product Adoption", "width": 1.2313822507858276}, {"from": "Increasing Product Adoption", "to": "Product UX Research \u0026 Design", "width": 1.248342514038086}, {"from": "Increasing Product Adoption", "to": "038: Media Buying And Platform Development, With eNabled Software Founder Conrad Brits", "width": 1.2391338348388672}, {"from": "Increasing Product Adoption", "to": "King Sidharth \u2013 Head of Design and Product at Headout \u2013 Whiteboard.fm #012", "width": 1.2167221307754517}, {"from": "Engineering business success whilst navigating Covid-19 - John Walker", "to": "Cultivating a Career of Creativity", "width": 1.247878909111023}, {"from": "Engineering business success whilst navigating Covid-19 - John Walker", "to": "Marketing with Purpose - Natalie Riviere", "width": 1.2460973262786865}, {"from": "Engineering business success whilst navigating Covid-19 - John Walker", "to": "Founder Talk: Dawn Myers (The MOST)", "width": 1.2448276281356812}, {"from": "Reimagining the Pharma-Physician Communication Dynamic", "to": "Customer Experience in Healthcare", "width": 1.1807003021240234}, {"from": "Africa\u0027s Untapped Potential for Fintechs and Payments with Marek Zmyslowski: Ep 101", "to": "\u0027O\u0027 Adeyemi: Global Partnerships \u0026 Expansion, Flutterwave -  From Payments to E-Commerce", "width": 1.1873362064361572}, {"from": "S1E10: Blockchain and The Internet of Things (IoT) with David S\u00f8nsteb\u00f8, Founder of IOTA", "to": "Self Sovereign Identity with Drummond Reed, CTO at Evernym", "width": 1.2481859922409058}, {"from": "Wireless Infrastructure: 2020 Vision With Jonathan Adelstein", "to": "Military Veterans Enabling 5G Deployments With Carrie Shyack", "width": 1.2183067798614502}, {"from": "Product UX Research \u0026 Design", "to": "038: Media Buying And Platform Development, With eNabled Software Founder Conrad Brits", "width": 1.219716191291809}, {"from": "Product UX Research \u0026 Design", "to": "The biggest challenges facing B2B Product Marketers today with Sean Lauer of Mural ", "width": 1.2136996984481812}, {"from": "Product UX Research \u0026 Design", "to": "Episode 25: Mastering Customer Experience with Scott Braun", "width": 1.2380527257919312}, {"from": "Product UX Research \u0026 Design", "to": "Founder Talk: Dawn Myers (The MOST)", "width": 1.1900277137756348}, {"from": "038: Media Buying And Platform Development, With eNabled Software Founder Conrad Brits", "to": "The biggest challenges facing B2B Product Marketers today with Sean Lauer of Mural ", "width": 1.2310113906860352}, {"from": "The biggest challenges facing B2B Product Marketers today with Sean Lauer of Mural ", "to": "Episode 25: Mastering Customer Experience with Scott Braun", "width": 1.230532169342041}, {"from": "Episode 25: Mastering Customer Experience with Scott Braun", "to": "How John Tabis Of The Bouqs Company Is Bringing Flowers To Every Moment Of Life", "width": 1.1758207082748413}, {"from": "Episode 25: Mastering Customer Experience with Scott Braun", "to": "#638 Dean Waters - Cannabis Storytelling", "width": 1.2482229471206665}, {"from": "Episode 25: Mastering Customer Experience with Scott Braun", "to": "RADIO by Jack Roberts #006 - Richard Reid", "width": 1.210410475730896}, {"from": "Founder Talk: Dawn Myers (The MOST)", "to": "Ryan Gill On How Brands Can Land The Best Creative Talent", "width": 1.2135602235794067}, {"from": "Founder Talk: Dawn Myers (The MOST)", "to": "FI - Everett Berry (Perceive) On Spatial Intelligence ", "width": 1.2466890811920166}, {"from": "Founder Talk: Dawn Myers (The MOST)", "to": "Product Lifecycle Management with Lucy Blackley, CEO of Bombyx PLM", "width": 1.2190425395965576}, {"from": "Founder Talk: Dawn Myers (The MOST)", "to": "Revenue is Hype; Net Cash is King", "width": 1.19049072265625}, {"from": "Founder Talk: Dawn Myers (The MOST)", "to": "RADIO by Jack Roberts #006 - Richard Reid", "width": 1.2084370851516724}, {"from": "E46: Raising Series A round during a Pandemic | Mohammed Aldossary, Sary", "to": "#22 \u2192 Charlie Feng: What\u0027s the Next Bicycle?", "width": 1.2205969095230103}, {"from": "1742 How Elastic.io Sold, Got Earnout and Hit $6m ARR in PaaS Space", "to": "1761 Changelog Software Hits $650k Revenue, Bootstrapped From Spain", "width": 1.220314383506775}, {"from": "1742 How Elastic.io Sold, Got Earnout and Hit $6m ARR in PaaS Space", "to": "1763 $4m ARR Company Burned $1.7m Last Year, Good or Bad?", "width": 1.1962425708770752}, {"from": "1742 How Elastic.io Sold, Got Earnout and Hit $6m ARR in PaaS Space", "to": "1748 \u0027Wouldn\u0027t Be Surprise If We Hit $50M This Year\u0027 says 3d Home Modeling CEO", "width": 1.2145836353302002}, {"from": "1742 How Elastic.io Sold, Got Earnout and Hit $6m ARR in PaaS Space", "to": "1754 Parker Conrad Gave Rippling CTO 40%, Kept 60%, 2,000 Customers \u0027$36m ARR Not Far Off\u0027", "width": 1.1702502965927124}, {"from": "1761 Changelog Software Hits $650k Revenue, Bootstrapped From Spain", "to": "1754 Parker Conrad Gave Rippling CTO 40%, Kept 60%, 2,000 Customers \u0027$36m ARR Not Far Off\u0027", "width": 1.230358600616455}, {"from": "1763 $4m ARR Company Burned $1.7m Last Year, Good or Bad?", "to": "1749 How He Hit $9m Revenues Paying Resellers 24% Kickbacks", "width": 1.1975440979003906}, {"from": "1763 $4m ARR Company Burned $1.7m Last Year, Good or Bad?", "to": "1753 \u0027IoT AgTech Device Hits $1m Software Run Rate and $1.2m in Hardware Sales. Can He Get $60m Valuation? \u0027", "width": 1.2428983449935913}, {"from": "1763 $4m ARR Company Burned $1.7m Last Year, Good or Bad?", "to": "1748 \u0027Wouldn\u0027t Be Surprise If We Hit $50M This Year\u0027 says 3d Home Modeling CEO", "width": 1.1968427896499634}, {"from": "1763 $4m ARR Company Burned $1.7m Last Year, Good or Bad?", "to": "1754 Parker Conrad Gave Rippling CTO 40%, Kept 60%, 2,000 Customers \u0027$36m ARR Not Far Off\u0027", "width": 1.1736505031585693}, {"from": "1748 \u0027Wouldn\u0027t Be Surprise If We Hit $50M This Year\u0027 says 3d Home Modeling CEO", "to": "1753 \u0027IoT AgTech Device Hits $1m Software Run Rate and $1.2m in Hardware Sales. Can He Get $60m Valuation? \u0027", "width": 1.1597784757614136}, {"from": "1748 \u0027Wouldn\u0027t Be Surprise If We Hit $50M This Year\u0027 says 3d Home Modeling CEO", "to": "1754 Parker Conrad Gave Rippling CTO 40%, Kept 60%, 2,000 Customers \u0027$36m ARR Not Far Off\u0027", "width": 1.1876834630966187}, {"from": "1754 Parker Conrad Gave Rippling CTO 40%, Kept 60%, 2,000 Customers \u0027$36m ARR Not Far Off\u0027", "to": "1749 How He Hit $9m Revenues Paying Resellers 24% Kickbacks", "width": 1.1916022300720215}, {"from": "1754 Parker Conrad Gave Rippling CTO 40%, Kept 60%, 2,000 Customers \u0027$36m ARR Not Far Off\u0027", "to": "1753 \u0027IoT AgTech Device Hits $1m Software Run Rate and $1.2m in Hardware Sales. Can He Get $60m Valuation? \u0027", "width": 1.2166022062301636}, {"from": "On the Future of More Fulfilling Work\u2014John Hagel\u2014Deloitte\u2019s Center for the Edge", "to": "Cultivating a Career of Creativity", "width": 1.2347438335418701}, {"from": "Cultivating a Career of Creativity", "to": "Ryan Gill On How Brands Can Land The Best Creative Talent", "width": 1.248015284538269}, {"from": "#639 Paul D. Miller aka DJ Spooky - Tech, Art, Music", "to": "#660 Jeff Desjardins - Visual Capitalist", "width": 1.2076047658920288}, {"from": "9: Nishant Parashar - Part 6/8 :  Building an Authentic Indian Story on Engagement", "to": "13: Nishant Parashar - Highlights - Founder, Engage4more", "width": 1.2358777523040771}, {"from": "9: Nishant Parashar - Part 6/8 :  Building an Authentic Indian Story on Engagement", "to": "12: Nishant Parashar - Full Converstation - Founder, Engage4more", "width": 1.2039756774902344}, {"from": "13: Nishant Parashar - Highlights - Founder, Engage4more", "to": "12: Nishant Parashar - Full Converstation - Founder, Engage4more", "width": 1.0484699010849}, {"from": "13: Nishant Parashar - Highlights - Founder, Engage4more", "to": "Crowdsourcing, purpose and understanding your why - chatting with Epi Ludvik", "width": 1.2469459772109985}, {"from": "12: Nishant Parashar - Full Converstation - Founder, Engage4more", "to": "Crowdsourcing, purpose and understanding your why - chatting with Epi Ludvik", "width": 1.2450531721115112}, {"from": "Ep 48 / HOW THE GOOGLE MAPS PLATFORM CHANGES BUSINESS MODELS \u0026 THE FUTURE / Francisco Irao, Google", "to": "Ep 46 / LEADING PEOPLE AND HIGH PERFORMING PARTNERSHIPS AT GOOGLE / Eric Rosenkranz, Google Cloud", "width": 1.128731369972229}, {"from": "Bonus Episode Mailbag Extra!", "to": "Episode 28: Moving up against the market", "width": 1.1830430030822754}, {"from": "FI - Matt Shumer (Visos) On The Future of Virtual Reality ", "to": "FI - Kai Frazier (Kai XR) On VR For Kids", "width": 1.2333391904830933}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.9,
+            "gravitationalConstant": -20000,
+            "springConstant": 0.05,
+            "springLength": 200
+        },
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.2,
+            "damping": 0.85,
+            "nodeDistance": 200,
+            "springConstant": 0.05,
+            "springLength": 200
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

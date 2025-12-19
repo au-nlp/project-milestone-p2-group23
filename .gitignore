@@ -5,3 +5,7 @@ __pycache__/
 
 # Mac OS
 .DS_Store
+
+/data/
+
+/features/episode_vecs_v0.1.6/*

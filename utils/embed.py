@@ -7,6 +7,14 @@ import torch.nn.functional as F
 from .metrics import score_ideas
 
 
+def _logsumexp(x):
+    """Numerically stable log-sum-exp for 1D numpy arrays."""
+    if x.size == 0:
+        return -np.inf
+    m = np.max(x)
+    return m + np.log(np.exp(x - m).sum())
+
+
 def mean_pool(last_hidden_state, attention_mask):
     mask = attention_mask.unsqueeze(-1).expand(last_hidden_state.size()).float()
     masked = last_hidden_state * mask
@@ -70,13 +78,14 @@ def embed_episodes_batched(
     text_column='transcript',
     agg="mean",
     max_len=256,
+    stride=32,
     batch_size=512,
     device='cuda'
 ):
     episode_counts = []
     all_chunks = []
     for text in tqdm(df[text_column]):
-        chunks = chunk_by_tokens(tokenizer, text, max_len=max_len)
+        chunks = chunk_by_tokens(tokenizer, text, max_len=max_len, stride=stride)
         episode_counts.append(len(chunks))
         all_chunks.extend(chunks)
 
@@ -100,6 +109,46 @@ def embed_episodes_batched(
         start += count
 
     return np.vstack(episode_vecs)
+
+
+@torch.no_grad()
+def embed_episode_segments_batched(
+    model,
+    tokenizer,
+    df,
+    text_column='transcript',
+    max_len=256,
+    stride=32,
+    batch_size=512,
+    device='cuda'
+):
+    """
+    Embed all transcript segments without aggregating to the episode level.
+
+    Returns a list where each element is a numpy array of shape
+    (num_segments_for_episode, embed_dim) corresponding to one episode.
+    """
+    episode_counts = []
+    all_chunks = []
+    for text in tqdm(df[text_column]):
+        chunks = chunk_by_tokens(tokenizer, text, max_len=max_len, stride=stride)
+        episode_counts.append(len(chunks))
+        all_chunks.extend(chunks)
+
+    all_embs = []
+    for i in tqdm(range(0, len(all_chunks), batch_size)):
+        batch = all_chunks[i:i+batch_size]
+        embs = embed_texts(model, tokenizer, batch, max_tokens=max_len, batch_size=batch_size, device=device)
+        all_embs.append(embs)
+    all_embs = np.vstack(all_embs)
+
+    episode_segments = []
+    start = 0
+    for count in episode_counts:
+        episode_segments.append(all_embs[start:start+count])
+        start += count
+
+    return episode_segments
 
 
 # TODO: impl
@@ -130,3 +179,206 @@ def score_df_by_ideas(
         df[col] = scores[:, i]
 
     return df
+
+
+def _aggregate_similarity_values(
+    sims,
+    agg="topk_mean",
+    top_k=5,
+    tau=0.07,
+    threshold=0.2,
+):
+    """
+    Aggregate similarity values for one episode/idea pair using different pooling rules.
+
+    - topk_mean: mean of the top_k similarities
+    - logsumexp: log(sum(exp(sim / tau)))
+    - pct_above: fraction of sims above the threshold
+    - mean: standard mean pooling (backwards compatible)
+    """
+    if sims.size == 0:
+        return np.nan
+
+    if agg == "topk_mean":
+        k = min(top_k, sims.size)
+        top_vals = np.partition(sims, -k)[-k:]
+        return float(top_vals.mean())
+    if agg == "logsumexp":
+        if tau <= 0:
+            raise ValueError("tau must be > 0 for logsumexp pooling")
+        return float(_logsumexp(sims / tau))
+    if agg == "pct_above":
+        return float((sims > threshold).mean())
+    if agg == "mean":
+        return float(sims.mean())
+
+    raise ValueError(f"Unknown aggregation method: {agg}")
+
+
+def score_episode_segments(
+    segment_embs,
+    idea_vecs,
+    agg="topk_mean",
+    top_k=5,
+    tau=0.07,
+    threshold=0.2,
+):
+    """
+    Compute aggregated similarity scores for one episode against many ideas.
+
+    Parameters
+    ----------
+    segment_embs : np.ndarray
+        Array of shape (num_segments, embed_dim) with normalized embeddings.
+    idea_vecs : np.ndarray
+        Array of shape (num_ideas, embed_dim) with normalized idea embeddings.
+    agg : str
+        Aggregation rule (topk_mean, logsumexp, pct_above, mean).
+
+    Returns
+    -------
+    np.ndarray
+        Array of shape (num_ideas,) with aggregated scores.
+    """
+    idea_vecs = np.atleast_2d(idea_vecs)
+
+    if segment_embs.size == 0:
+        return np.full((idea_vecs.shape[0],), np.nan, dtype=np.float32)
+
+    sims = segment_embs @ idea_vecs.T
+    scores = np.empty(sims.shape[1], dtype=np.float32)
+    for j in range(sims.shape[1]):
+        scores[j] = _aggregate_similarity_values(
+            sims[:, j],
+            agg=agg,
+            top_k=top_k,
+            tau=tau,
+            threshold=threshold,
+        )
+    return scores
+
+
+def score_segments_by_ideas(
+    episode_segments,
+    idea_vecs,
+    agg="topk_mean",
+    top_k=5,
+    tau=0.07,
+    threshold=0.2,
+):
+    """
+    Compute aggregated similarity scores for many episodes against many ideas.
+
+    Parameters
+    ----------
+    episode_segments : List[np.ndarray]
+        Each element contains embeddings for one episode's segments.
+    idea_vecs : np.ndarray
+        Array of shape (num_ideas, embed_dim) with normalized idea embeddings.
+
+    Returns
+    -------
+    np.ndarray
+        Shape (num_episodes, num_ideas) with aggregated scores.
+    """
+    idea_vecs = np.atleast_2d(idea_vecs)
+    results = np.empty((len(episode_segments), idea_vecs.shape[0]), dtype=np.float32)
+    for i, segs in enumerate(episode_segments):
+        results[i] = score_episode_segments(
+            segs,
+            idea_vecs,
+            agg=agg,
+            top_k=top_k,
+            tau=tau,
+            threshold=threshold,
+        )
+    return results
+
+
+def _softmax(x, tau):
+    """Temperature-scaled softmax over a 1D numpy array."""
+    z = x / tau
+    z = z - np.max(z)
+    exp_z = np.exp(z)
+    return exp_z / np.sum(exp_z)
+
+
+def pool_segments_for_idea(
+    segment_embs,
+    idea_vec,
+    agg="topk_mean",
+    top_k=5,
+    tau=0.07,
+    threshold=0.2,
+    normalize=True,
+):
+    """
+    Create an idea-aware pooled embedding for one episode.
+
+    This keeps the pooling logic aligned with the similarity aggregation:
+    - topk_mean: average the embeddings of the top_k similar segments
+    - logsumexp: softmax-weighted sum of segment embeddings
+    - pct_above: mean of embeddings above the similarity threshold
+    - mean: uniform mean of all segments
+    """
+    if segment_embs.size == 0:
+        return np.zeros_like(idea_vec)
+
+    sims = segment_embs @ idea_vec
+
+    if agg == "topk_mean":
+        k = min(top_k, sims.size)
+        top_idx = np.argpartition(sims, -k)[-k:]
+        pooled = segment_embs[top_idx].mean(axis=0)
+    elif agg == "logsumexp":
+        if tau <= 0:
+            raise ValueError("tau must be > 0 for logsumexp pooling")
+        weights = _softmax(sims, tau)
+        pooled = (segment_embs * weights[:, None]).sum(axis=0)
+    elif agg == "pct_above":
+        mask = sims > threshold
+        if mask.any():
+            pooled = segment_embs[mask].mean(axis=0)
+        else:
+            pooled = segment_embs.mean(axis=0)
+    elif agg == "mean":
+        pooled = segment_embs.mean(axis=0)
+    else:
+        raise ValueError(f"Unknown aggregation method: {agg}")
+
+    if normalize:
+        norm = np.linalg.norm(pooled)
+        if norm > 0:
+            pooled = pooled / norm
+
+    return pooled
+
+
+def pooled_episode_embeddings(
+    episode_segments,
+    idea_vec,
+    agg="topk_mean",
+    top_k=5,
+    tau=0.07,
+    threshold=0.2,
+    normalize=True,
+):
+    """
+    Pool embeddings for many episodes for a single idea.
+
+    Returns a numpy array of shape (num_episodes, embed_dim).
+    """
+    pooled = []
+    for segs in episode_segments:
+        pooled.append(
+            pool_segments_for_idea(
+                segs,
+                idea_vec,
+                agg=agg,
+                top_k=top_k,
+                tau=tau,
+                threshold=threshold,
+                normalize=normalize,
+            )
+        )
+    return np.vstack(pooled)
