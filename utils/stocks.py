@@ -6,6 +6,8 @@ from statsmodels.tsa.stattools import grangercausalitytests
 from scipy.stats import pearsonr, spearmanr
 from .embed import score_df_by_ideas, score_segments_by_ideas
 from .metrics import get_daily_scores
+import io
+import contextlib
 
 def fetch_daily_prices(
     tickers,
@@ -36,7 +38,12 @@ def fetch_daily_prices(
         all_days = pd.date_range(start, end, freq="D")
         prices = prices.reindex(all_days)
         if fill_method:
-            prices = prices.fillna(method=fill_method)
+            if fill_method not in ["ffill", "bfill"]:
+                raise ValueError("fill_method must be 'ffill' or 'bfill'")
+            if fill_method == "ffill":
+                prices = prices.ffill()
+            else:
+                prices = prices.bfill()
 
     prices.index.name = "date"
     prices = prices.reset_index()
@@ -73,7 +80,9 @@ def compute_ssr_ftest(daily_df, ticker, idea_score_column, maxlag=10):
 
     gc = daily_df[[ticker_ret_col, idea_score_column]].dropna()
 
-    res = grangercausalitytests(gc[[ticker_ret_col, idea_score_column]], maxlag=maxlag, verbose=False)
+    # Suppress output from grangercausalitytests
+    with contextlib.redirect_stdout(io.StringIO()):
+        res = grangercausalitytests(gc[[ticker_ret_col, idea_score_column]], maxlag=maxlag)
 
     lags = []
     for lag in range(1, maxlag+1):
