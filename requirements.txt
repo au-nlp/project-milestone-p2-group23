@@ -1,0 +1,27 @@
+# Core Data Science
+numpy
+pandas
+scipy
+statsmodels
+matplotlib
+seaborn
+
+# Graphing & Visualization
+plotly
+networkx
+pyvis
+ipywidgets
+
+# NLP & Machine Learning
+torch
+transformers
+datasets
+huggingface_hub
+tqdm
+
+# Financial Data
+yfinance
+
+# Jupyter Utilities
+jupyter
+nbformat
