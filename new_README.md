@@ -70,7 +70,3 @@ The core logic is contained entirely within `main.ipynb`.
 Any additional large artifacts (model weights, processed datasets) used in this project are hosted here:
 
 - **[Google Drive Folder Link](https://drive.google.com/drive/folders/1QABHakQ12phfQRyPg9b7-yrZjMOL3j6z)**
-
----
-
-_Group 23 - NLP Project_
