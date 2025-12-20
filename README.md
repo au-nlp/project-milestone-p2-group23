@@ -1,69 +1,92 @@
 # Information flows, but can you catch it?
-
-> **Milestone P3: Final Project**. This repository contains the final execution of our NLP project, exploring the semantic links between podcasts and their correlation with financial markets.
+**Milestone P3: Final Project** — NLP pipeline for mapping semantic links between podcast discourse and (exploratory) alignment with financial markets.
 
 ## Project Report
+For full methodology, results, and figures, read:
+**[Final Report (report.pdf)](report.pdf)**
 
-For a detailed description of our methodology, findings, and analysis, please refer to our final report:
-**[Read the Final Report (report.pdf)](report.pdf)**
+## Brief Project Explanation
+> Read the full Report for a better understanding
 
-## Abstract
+This project uses the **SPoRC dataset** (May–June 2020) to study how *themes (“ideas”)* appear across podcast episodes and how those themes connect shows, hosts, and categories in a semantic space.
 
-We explored how podcasts are linked by shared "ideas" and whether these informational signals can anticipate financial market movements. Using the **SPoRC dataset** (Structured Podcast Research Corpus), we generated embeddings for podcast transcripts to place episodes and abstract "ideas" into a shared semantic space.
+The pipeline does three things:
 
-**Key Implementations in P3:**
+1. **Idea extraction (theme intensity over time)**  
+   - Transcripts are chunked (fixed-length windows with overlap) to avoid context-length limits.  
+   - A sentence embedding model places both **idea descriptions** and **transcript chunks** into the same vector space.  
+   - “Idea intensity” is computed by aggregating chunk-level cosine similarities into an episode score, then averaging into a daily time series.
 
-- **Idea Extraction**: We embedded texts and episodes to calculate relevance scores, tracking specific "idea intensity" over time.
-- **Graph Analysis**: We constructed knowledge graphs using `pyvis` to visualize the hidden connections between podcasts, hosts, and topics.
-- **Market Correlation**: We analyzed the time-series of these idea scores against stock market data (via `yfinance`) to identify potential predictive signals.
+2. **Graph construction (semantic neighborhoods)**  
+   - Sparse similarity graphs are built at **episode**, **podcast**, and **host** level.  
+   - Edges exist only above a similarity threshold to keep graphs interpretable.  
+   - Result: coherent clusters plus cross-category bridges that help navigate large collections.
 
-This repository hosts the complete codebase for this pipeline.
+3. **Market alignment (exploratory, not predictive claims)**  
+   - Daily idea intensity is aligned with market variables (returns and volume).  
+   - We compute Pearson/Spearman correlations (with p-values) and run Granger-causality tests across lags.  
+   - Main takeaway: **robust lead–lag evidence is weak** in this short time window; signals are often **reactive rather than predictive**, and aggressive pooling can create misleading patterns.
 
-## Team Contributions
+If you write “we predict markets,” you did not read the report.
 
-_(Please update the table below with your specific group members and their contributions)_
-
-| Team Member      | Contributions |
-| :--------------- | :------------ |
-| **Vlad Vladutu** | most of the codebase, technical writing and correctness pass on the report (methods, metrics, numbers validation), full LaTeX refinement and final formatting |
-| **Arne Wiese**   | [initial graph visualization, extra report figures/visuals, initial LaTeX structure + README] |
+## Key Implementations in P3
+- **Preprocessing**: filter metadata fields, coarse category filtering, exclude low-coverage days, fixed per-day sampling for stable time series.
+- **Embeddings**: chunk-level scoring + multiple aggregation strategies (mean/max/top-k/log-mean-exp/pct-above-threshold) to control “spiky” vs “broad” evidence.
+- **Idea generation (optional qualitative aid)**: evidence-grounded, headline-style summaries from selected sentences (MMR + Flan-T5).
+- **Graphs**: thresholded semantic similarity networks with shortest-path support via inverse-similarity edge lengths.
+- **Market tests**: aligned time series + correlation scans + Granger tests across lags; interpretation kept explicitly exploratory.
 
 ## Repository Structure
+Per P3 requirements, the main logic is consolidated into a single notebook.
 
-Per the P3 requirements, the main logic is consolidated into a single notebook, with helper functions modularized.
-
-- `main.ipynb` - **The Core Logic**. Contains the full pipeline:
-  1.  Dataset visualization
-  2.  Dataset preprocessing
-  3.  "Idea" extraction (embeddings)
-  4.  Preview generation
-  5.  Graph construction
-  6.  Graph visualization
-  7.  Stock Market Correlation
-- `report.pdf` - The final project report.
-- `assets/` - Static assets (images/icons) for notebook previews.
-- `features/` - Preprocessed versioned features for reproducibility.
+- `main.ipynb` — **Core pipeline**:
+  1. Dataset visualization
+  2. Dataset preprocessing
+  3. Idea extraction (chunk embeddings + scoring)
+  4. (Optional) Idea/preview generation
+  5. Graph construction
+  6. Graph visualization
+  7. Market alignment (correlation + Granger tests)
+- `report.pdf` — Final report (methods + results).
+- `assets/` — Images/icons used for notebook previews.
+- `features/` — Preprocessed/versioned features for reproducibility.
 
 ## Usage / Quickstart
+The pipeline is entirely in `main.ipynb`.
 
-The core logic is contained entirely within `main.ipynb`.
-
-1. **Create and activate the conda environment**:
+1. **Create and activate the conda environment**
    ```bash
    conda create -n nlp_project python=3.13.1 -y
    conda activate nlp_project
    ```
-2. **Install Dependencies**:
-   - Installed when running the notebook
-3. **Create Hugging Face Access Token**:
-   Create a valid Hugging Face token and insert into main.pynb.
-4. **Download Embeddings**:
-   Download the embeddings from the google drive link references in external resources.
-5. **Run Pipeline**:
-   Execute `main.ipynb` sequentially to reproduce the embeddings, knowledge graphs, and correlation plots.
+
+2. **Install dependencies**
+
+   * Install the packages required by the notebook (see notebook cells).
+   * If you add a `requirements.txt`, use it. If you don’t, expect pain.
+
+3. **Set Hugging Face access token**
+
+   * Create a valid Hugging Face token and insert it where the notebook expects it.
+
+4. **Download large artifacts**
+
+   * Download embeddings / large intermediate files from the external resources.
+
+5. **Run**
+
+   * Execute `main.ipynb` top-to-bottom (sequential execution).
+     Skipping cells breaks reproducibility. Don’t do it.
+
+## Team Contributions
+
+| Team Member      | Contributions                                                                                                                                                 |
+| :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Vlad Vladutu** | most of the codebase, technical writing and correctness pass on the report (methods, metrics, numbers validation), full LaTeX refinement and final formatting |
+| **Arne Wiese**   | initial graph visualization, extra report figures/visuals, initial LaTeX structure + README                                                                   |
 
 ## 🔗 External Resources
 
-Any additional large artifacts (model weights, processed datasets) used in this project are hosted here:
+Large artifacts (model outputs, processed data) are hosted here:
 
-- **[Google Drive Folder Link](https://drive.google.com/drive/folders/1TejVi77wSzXLJGDSFDHR_nPDnm6s3Ovb)**
+* **Google Drive Folder**: [https://drive.google.com/drive/folders/1TejVi77wSzXLJGDSFDHR_nPDnm6s3Ovb](https://drive.google.com/drive/folders/1TejVi77wSzXLJGDSFDHR_nPDnm6s3Ovb)
