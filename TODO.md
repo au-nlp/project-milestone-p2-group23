@@ -1,4 +1,0 @@
-- Filter by categories
-- Use more events between may and june
-- Correlate with many tickers
-- 

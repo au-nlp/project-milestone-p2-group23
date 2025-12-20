@@ -25,3 +25,5 @@ yfinance
 # Jupyter Utilities
 jupyter
 nbformat
+
+scikit-learn
