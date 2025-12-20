@@ -6,28 +6,26 @@ For full methodology, results, and figures, read:
 **[Final Report (report.pdf)](report.pdf)**
 
 ## Brief Project Explanation
-> Read the full Report for a better understanding
+> The report contains full parameter settings, figures and the required explanations.
 
 This project uses the **SPoRC dataset** (May–June 2020) to study how *themes (“ideas”)* appear across podcast episodes and how those themes connect shows, hosts, and categories in a semantic space.
 
 The pipeline does three things:
 
 1. **Idea extraction (theme intensity over time)**  
-   - Transcripts are chunked (fixed-length windows with overlap) to avoid context-length limits.  
-   - A sentence embedding model places both **idea descriptions** and **transcript chunks** into the same vector space.  
-   - “Idea intensity” is computed by aggregating chunk-level cosine similarities into an episode score, then averaging into a daily time series.
+   - Transcripts are chunked (fixed-length windows (256 tokens) with overlap (stride of 32 tokens)) to avoid context-length limits.  
+   - A sentence embedding model (`sentence-transformers/all-MiniLM-L6-v2`) places both **idea descriptions** and **transcript chunks** into the same vector space.  
+   - “Idea intensity” is computed by aggregating chunk-level cosine similarities into an episode score, then averaging into a daily time series. Depending on the idea we analyze, the embedding of the episode would addapt in an idea-aware way.
 
 2. **Graph construction (semantic neighborhoods)**  
    - Sparse similarity graphs are built at **episode**, **podcast**, and **host** level.  
-   - Edges exist only above a similarity threshold to keep graphs interpretable.  
+   - Edges exist only above a similarity threshold (tau >= 0.2) to keep graphs interpretable.  
    - Result: coherent clusters plus cross-category bridges that help navigate large collections.
 
 3. **Market alignment (exploratory, not predictive claims)**  
-   - Daily idea intensity is aligned with market variables (returns and volume).  
+   - Daily idea intensity is aligned with market variables (returns and volume for multiple related tickers, fetched from yfinance).  
    - We compute Pearson/Spearman correlations (with p-values) and run Granger-causality tests across lags.  
    - Main takeaway: **robust lead–lag evidence is weak** in this short time window; signals are often **reactive rather than predictive**, and aggressive pooling can create misleading patterns.
-
-If you write “we predict markets,” you did not read the report.
 
 ## Key Implementations in P3
 - **Preprocessing**: filter metadata fields, coarse category filtering, exclude low-coverage days, fixed per-day sampling for stable time series.
@@ -51,7 +49,7 @@ Per P3 requirements, the main logic is consolidated into a single notebook.
 - `report_latex.zip` - The source files for the report
 - `assets/` - Images/icons used for notebook previews.
 - `features/` - Preprocessed/versioned features for reproducibility. The versioning README.md is also displayed in the code.
-- `drafts/` - A lot of drafts
+- `drafts/` - A lot of drafts. `drafts/old_mains/newer/main_arne.ipynb` used for some visualizations used in the report.
 
 ## Usage / Quickstart
 The pipeline is entirely in `main.ipynb`.
