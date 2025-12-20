@@ -2,6 +2,8 @@ from IPython.display import HTML, Image, Markdown, display
 from pyvis.network import Network
 from glob import glob
 
+from base64 import b64encode
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 import itertools
@@ -14,12 +16,35 @@ def view_image(img_path, width=600):
     display(Image(filename=img_path, width=width))
 
 
+# def view_images(pattern, cols=6):
+#     display(HTML(
+#         f"<div style='display:grid;grid-template-columns:repeat({cols},1fr);gap:6px'>"
+#         + "".join(f"<img src='{p}' style='width:100%;aspect-ratio:1;object-fit:cover'>" for p in glob(pattern))
+#         + "</div>"
+#     ))
+
 def view_images(pattern, cols=6):
+    paths = sorted(glob(pattern))
+    tags = []
+    for p in paths:
+        with open(p, "rb") as f:
+            b64 = b64encode(f.read()).decode("ascii")
+        tags.append(f"<img src='data:image/png;base64,{b64}' style='width:100%;aspect-ratio:1;object-fit:cover'>")
+
     display(HTML(
         f"<div style='display:grid;grid-template-columns:repeat({cols},1fr);gap:6px'>"
-        + "".join(f"<img src='{p}' style='width:100%;aspect-ratio:1;object-fit:cover'>" for p in glob(pattern))
-        + "</div>"
+        + "".join(tags) +
+        "</div>"
     ))
+
+# def view_images(pattern, cols=6):
+#     paths = sorted(glob(pattern))
+#     display(HTML(
+#         f"<div style='display:grid;grid-template-columns:repeat({cols},1fr);gap:6px'>"
+#         + "".join(f"<img src='{p}?raw=1' style='width:100%;aspect-ratio:1;object-fit:cover'>" for p in paths)
+#         + "</div>"
+#     ))
+
 
 
 def view_md(md_path):
