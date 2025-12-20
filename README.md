@@ -50,7 +50,7 @@ Per P3 requirements, the main logic is consolidated into a single notebook.
 - `report.pdf` - Final report (methods + results).
 - `report_latex.zip` - The source files for the report
 - `assets/` - Images/icons used for notebook previews.
-- `features/` - Preprocessed/versioned features for reproducibility.
+- `features/` - Preprocessed/versioned features for reproducibility. The versioning README.md is also displayed in the code.
 - `drafts/` - A lot of drafts
 
 ## Usage / Quickstart
@@ -64,8 +64,8 @@ The pipeline is entirely in `main.ipynb`.
 
 2. **Install dependencies**
 
-   * Install the packages required by the notebook (see notebook cells).
-   * If you add a `requirements.txt`, use it. If you don’t, expect pain.
+   * Installng the packages required by the notebook happens in the first cell.
+   * **OR** use requirements.txt
 
 3. **Set Hugging Face access token**
 
@@ -73,12 +73,13 @@ The pipeline is entirely in `main.ipynb`.
 
 4. **Download large artifacts**
 
-   * Download embeddings / large intermediate files from the external resources.
+   * Download embeddings (`v0.1.6`) from the external resources in the relative `features/episode_vecs_v0.1.6` directory.
+   * The dataset is huge. Make sure you download it at most once, and specify the correct path.
 
 5. **Run**
 
    * Execute `main.ipynb` top-to-bottom (sequential execution).
-     Skipping cells breaks reproducibility. Don’t do it.
+     Skipping cells could break reproducibility. Be cautious!
 
 ## Team Contributions
 
@@ -89,6 +90,6 @@ The pipeline is entirely in `main.ipynb`.
 
 ## 🔗 External Resources
 
-Large artifacts (model outputs, processed data) are hosted here:
+Large artifacts (The episode embeddings which are to big to host on github, i.e `v0.1.6`) are hosted here:
 
 * **Google Drive Folder**: [https://drive.google.com/drive/folders/1TejVi77wSzXLJGDSFDHR_nPDnm6s3Ovb](https://drive.google.com/drive/folders/1TejVi77wSzXLJGDSFDHR_nPDnm6s3Ovb)
