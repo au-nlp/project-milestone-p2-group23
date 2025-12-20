@@ -25,8 +25,8 @@ _(Please update the table below with your specific group members and their contr
 
 | Team Member      | Contributions |
 | :--------------- | :------------ |
-| **Vlad Vladutu** | [Most of the code, Added details to latex] |
-| **Arne Wiese**   | [Some visualizations, Initial latex structure] |
+| **Vlad Vladutu** | most of the codebase, technical writing and correctness pass on the report (methods, metrics, numbers validation), full LaTeX refinement and final formatting |
+| **Arne Wiese**   | [initial graph visualization, extra report figures/visuals, initial LaTeX structure + README] |
 
 ## Repository Structure
 
