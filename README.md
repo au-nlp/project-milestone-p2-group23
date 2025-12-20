@@ -83,7 +83,7 @@ The pipeline is entirely in `main.ipynb`.
 | Team Member      | Contributions                                                                                                                                                 |
 | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Vlad Vladutu** | most of the codebase, technical writing and correctness pass on the report (methods, metrics, numbers validation), full LaTeX refinement and final formatting |
-| **Arne Wiese**   | initial graph visualization, extra report figures/visuals, initial LaTeX structure + README                                                                   |
+| **Arne Wiese**   | initial graph visualization, conducted experiments on different embeddings, created extra report figures/visuals, initial LaTeX report + README               |
 
 ## 🔗 External Resources
 
