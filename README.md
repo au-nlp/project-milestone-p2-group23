@@ -39,7 +39,7 @@ If you write “we predict markets,” you did not read the report.
 ## Repository Structure
 Per P3 requirements, the main logic is consolidated into a single notebook.
 
-- `main.ipynb` — **Core pipeline**:
+- `main.ipynb` - **Core pipeline**:
   1. Dataset visualization
   2. Dataset preprocessing
   3. Idea extraction (chunk embeddings + scoring)
@@ -47,9 +47,11 @@ Per P3 requirements, the main logic is consolidated into a single notebook.
   5. Graph construction
   6. Graph visualization
   7. Market alignment (correlation + Granger tests)
-- `report.pdf` — Final report (methods + results).
-- `assets/` — Images/icons used for notebook previews.
-- `features/` — Preprocessed/versioned features for reproducibility.
+- `report.pdf` - Final report (methods + results).
+- `report_latex.zip` - The source files for the report
+- `assets/` - Images/icons used for notebook previews.
+- `features/` - Preprocessed/versioned features for reproducibility.
+- `drafts/` - A lot of drafts
 
 ## Usage / Quickstart
 The pipeline is entirely in `main.ipynb`.
